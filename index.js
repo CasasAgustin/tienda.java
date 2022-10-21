@@ -1,116 +1,310 @@
-/*
-let nombre = prompt("ingrese su nombre porfavor")
+//Renderizar contador
+function renderAccumulator(accumulator) {
+  let contadorRender = document.getElementById('contador');
+  contadorRender.innerHTML = `<p class="contador-style">
+                              ${accumulator}
+                              </p>`;
+}
+function buyAction () {
 
+  let buyButtons = document.getElementsByClassName('button-buy');
+  //Bucle botones de comprar
+  for (const button of buyButtons) {
+  button.addEventListener('click', function buy (event) {
+      //Agregar al carrito productos y renderizarlos
+          let selectedProduct = products.find( x => x.id == event.target.value);
+          cart.push(selectedProduct);
+          renderCart(cart[cart.length - 1]);
+          accumulator ++;
+          //Renderizar el contador 
+          renderAccumulator(accumulator);
 
-if (nombre == "andres") {
-    alert("andres el que viene una vez al mes ")
-} else if(nombre == "roberto") {
-    alert("el que te dejo el culo abierto");
-}else if (nombre == "")
-alert("no me jodas")
+          //Eliminar productos del cart, y renderizarlo
+          let deleteButton = document.getElementsByClassName("delete");
+          for(const button1 of deleteButton) {
 
-alerto ("bueno andate")
-
-
-if(edad < 15){
-    alert("No puedes entrar");
-  }else if(edad < 18){
-    alert("Puedes entrar con un adulto");
-  }else{
-    alert("Puedes entrar");
+              button1.addEventListener('click', function (e) {
+                      e.stopImmediatePropagation();
+                      let deletedProduct = products.find( x => x.id == e.target.value);
+                      cart.splice(cart.indexOf(deletedProduct), 1);
+                      e.target.parentNode.parentNode.remove();
+                      //Renderizar el contador
+                      accumulator --;
+                      renderAccumulator(accumulator);
+                      })
+          }
+      })
   }
-
-
-
-
-----------------------------------
-
-estructura del FOR (bucle)
-
-for (desde ; hasta ; actualizacion){
-codigo a repetir }
-
-for(let i =0;i<100;i++){
-    console.log("hola",i);
 }
+//Renderizado de productos del array "products"
+function renderProducts () {
+  let html = '';
+  let container = document.getElementById('home');
+  products.forEach(product => {
 
-console.log("terminamos");
+      html +=
+      `<article class="${product.class}">
+      <img src="${product.img}" alt="${product.id}">
+      <h6>${product.description.toUpperCase()}</h6>
+      <p>$${product.price}</p>
+      <button class="button-buy" value="${product.id}">BUY</button>
+      </article>`
+      
+  }); 
 
-BREAK rompe/corta el bucle 
-
-for (let i = 0; i <= 10; i++) {
-    if (i === 5) {
-        break;
-    }
-  console.log(i);
+  container.innerHTML = html;
 }
-console.log("terminamos");
+//Funcion para vaciar carrito
+function emptyCart () {
+  let emptyButton = document.querySelector('.empty-cart');
+emptyButton.addEventListener('click', function() {
 
-CONTINUE es como un pozo que salta el numero o variable de 1 a 5 (evita el 3, cuenta : 1 2 4 5)
-for(let i = 1;i <=10 ; i++){
-    if(i===6){
-        continue;
-    }
-    console.log(i);
+  accumulator = 0;
+  renderAccumulator(accumulator);
+
+  if (cart.length === 0) {
+
+      swal({
+          title: "Oops!",
+          text: "No tienes items en tu carrito",
+          icon: "error",
+          button: "OK",
+      })
+      
+      $(".containercart").slideUp(1000);
+      $(".containergrid").css("filter", "blur(0px)");
+      clicks--;
+      cart = [];
+      accumulator = 0;
+      renderAccumulator(accumulator);
+      
+      
+  } else {
+          cart = [];
+          clicks--;
+          $(".containercart").slideUp(1000);
+          $(".containergrid").css("filter", "blur(0px)");
+
+          let td = document.getElementsByTagName('td');
+          for (const td1 of td) {
+                  td1.parentNode.remove();
+              }
+          accumulator = 0;
+          renderAccumulator(accumulator);
+          $('.resumen-pedido').css("display", "none");
+          $('.form').css("display", "none");
+
+      }
+  }
+);
+
 }
-
-console.log("terminamos");
-
-switch es como una tecla, va viendo que es cada cosa dependiendo el valor que pongas 
-
-let moneda = "ars";
-
-switch(moneda){
-  case "cop":
-    console.log("es de colombia");
-    break;
-
-  case "ars":
-    console.log("es de argentina");
-    break;
-
-  case "clp":
-    console.log("es de chile");
-    break;
-
-  default:
-    console.log("ingresaste una moneda diferente");
-    break;
+function welcome() {
+      //Renderizar nombre
+      swal("Bienvenido/a, ingrese su nombre para comprar:", {
+          content: "input",
+          })
+  
+          .then((value) => {
+          sessionStorage.setItem('username', JSON.stringify(value));
+          let renderUserName = JSON.parse(sessionStorage.getItem('username'));
+  
+          let welcome = document.querySelector('.welcome');
+          let pname = document.createElement('p');
+          welcome.appendChild(pname);
+          pname.innerHTML = `Signed as ${renderUserName.toUpperCase()}`; 
+      })
 }
-*/
+function dataPedido () {
 
 
-// let elija = prompt("elija la moneda a convertir dolar o euro")
-//let dolar = prompt("el valor del dolar es de $290")
-// const DOLAR= 290
+      $('.producto-pedido').append(` ${cart.length} PRODUCTOS $${total} `);
+  
+      if (total >= 5000) {
+          $('.entrega-pedido').append('Envío GRATIS ');
+          $('.envio-gratis').append('Tienes envío gratis por tu compra mayor a $5000');
+      }
+      else {
+          $('.entrega-pedido').append('Envío a pagar');
+          $('.envio-gratis').append('Envío gratis solo con compras mayores a $5000');
+      }
+  
+          $('.total-pedido').append(` TOTAL $${total}`);
+          $('.iva-pedido').append(` IVA incluido $${total * 0.21} `);
+          $('.total-pedido').append(` TOTAL $${total}`);
+          $('.iva-pedido').append(` IVA incluido $${total * 0.21} `);
 
-// if(dolar){("$valor * 290")
-// alert=("")
-// }
-// let euro = prompt ("el valor del euro es de $300")
-// const EURO= 300
-// let valor = prompt("")
-
-
-// let dolar;
-// let euro;
-// let terminamos;
-
-// for (let )
-
-
-alert("Bienvenido a nuestra pagina web!")
-for(let i =1; i <=3; i++){
-  if(i ===5){
-    continue;
 }
-}
-    console.log(i);
-console.log("terminamos")   
+//Funcion que renderiza el carrito
+function renderCart (product) {
 
-let usuario = prompt("Ingrese el usuario");
-while(usuario != "agustin"){
-    alert("usuario incorrecto");
-    usuario = prompt("Ingrese el usuario")
+  let cartindex = document.querySelector('table');
+
+  let row = document.createElement('tr');
+
+  let td = document.createElement('td');
+  td.innerHTML = `<img class="imgcart" src="${product.img}" alt="${product.id}">`;
+  row.appendChild(td);
+
+  td = document.createElement('td');
+  td.innerHTML = product.description;
+  row.appendChild(td);
+
+  td = document.createElement('td');
+  td.innerHTML = `$${product.price}`;
+  row.appendChild(td);
+
+  td = document.createElement('td');
+  td.innerHTML = `<img class ="delete" src="img/deletepng.png" type="button" value ="${product.id}">`
+  row.appendChild(td);
+
+  cartindex.appendChild(row);
 }
-alert("Bienvenid@ Ya podes hacer tu pedido")
+function renderDelete () {
+  let cartindex = document.querySelector('table');
+  let row = document.querySelector('tr');
+  cartindex.removeChild(row);
+}
+welcome();
+//Declaracion de los productos en stock.
+const products = [
+  {id:0, description:'Sweatshirt', price: 4000, size: 'M', img: 'img/img1.jpg', class: 'grid1'},
+  {id:1, description: 'Cardigan', price: 5500, size: 'S', img: 'img/img2.jpg',  class: 'grid2'},
+  {id:2, description: 'Skirt', price: 3800, size: 'S', img: 'img/img3.jpg',  class: 'grid3'},
+  {id:3, description: 'Dress', price: 7800, size: 'L', img: 'img/img4.jpg',  class: 'grid4'},
+  {id:4, description: 'Blouse', price: 2900, size: 'M', img: 'img/img5.jpg', class: 'grid5'},
+  {id:5, description: 'Purse', price: 4900, size:'U', img:'img/img6.jpg', class:'grid6'},
+];
+
+let cart = [];
+let accumulator = 0; 
+
+renderProducts();
+buyAction();
+// Boton de checkout
+let total = 0;
+$(".button-checkout").one("click", function (e) {
+
+  e.preventDefault();
+
+      for (let i = 0; i < cart.length; i++) {
+          total += cart[i].price;
+      }
+
+      if ((total < 1) || (cart.length < 1)) {
+      swal("Oops!", "No tienes productos en tu carrito!", "error");
+      $(".containergrid").css("filter", "none");
+      $(".containercart").slideUp(1000);
+      } 
+      else {
+      $('.cuotas').append(`
+      <select name="cuota" id="select">
+      <option value="$${total} en 1 pago de ${total}" class="option1" name="option"> 1 pago de $${total} sin interés </option>
+      <option value="$${total} en 3 pagos de ${total/3}" class="option2" name="option"> 3 pagos de $${total/3} sin interés </option>
+      <option value="$${total} en 12 pagos de ${total/12}" class="option3" name="option"> 12 pagos de $${total/12} sin interés </option>
+      </select>`
+      );
+      
+  $(".containergrid").css("filter", "none");
+  $(".form").slideDown(1000);
+  $('.resumen-pedido').css("display", "block", "backgroundColor", "white");
+  dataPedido();
+  }
+});
+
+$('.submit').on("click", function(e) {
+
+      e.preventDefault();
+      let form = document.getElementById('form');
+      let data = new FormData(form);
+      let infoData = JSON.stringify(data.get('username'));
+
+      $.ajax ({
+      method: 'POST',
+      url : 'https://jsonplaceholder.typicode.com/posts',
+      data: infoData,
+      success: function() {
+          console.log('Datos enviados correctamente');
+          }
+      })
+
+      let name = document.getElementById('input-name').value;
+      JSON.stringify(sessionStorage.setItem('name', name));
+      let email = document.getElementById('input-email').value;
+      sessionStorage.setItem('email', email);
+      let option = document.querySelector('option[name="option"]:checked').value;
+      sessionStorage.setItem('option', option);
+      let cvv = document.getElementById('input-cvv').value;
+
+      if (name === '') {
+          swal("Oops!", "Ingrese un nombre valido", "error");
+      }
+      else if (email === '') {
+          swal("Oops!", "Ingrese un mail valido", "error");
+      }
+      else if (cvv.length !== 3) {
+          swal("Oops!", "Ingrese un codigo de seguridad valido", "error");
+      } else {
+          swal({
+              title: "PAGO APROBADO #076!",
+              text: 'Gracias por tu compra, ' + JSON.parse(sessionStorage.getItem('username').toUpperCase()) + '!\n' + 'En unos minutos llegara un comprobante a ' + sessionStorage.getItem('email'),
+              icon: "success",
+              button: "OK",
+          });
+
+          $('.pago-resumen').css("display", "none");
+      }
+});
+
+emptyCart();
+
+let clicks = 0;
+
+$('.cartlogo').on('click', function() {
+
+  if (clicks === 0) {
+      $(".containercart").slideDown(1000);
+      $(".containercart").css("position", "absolute");
+      $(".containercart").css("z-index", "1");
+      $(".containergrid").css("filter", "blur(5px)");
+      clicks ++;
+  } else {
+      $(".containercart").slideUp(1000);
+      $(".containergrid").css("filter", "none")
+      clicks --;
+      }
+  }
+);
+
+$(document).ready(function() {
+  // Añadir smooth scrolling a todos los links
+  $("a").on('click', function(event) {
+    //
+  if (this.hash !== "") {
+      event.preventDefault();
+      let hash = this.hash;
+      $('html, body').animate({
+      scrollTop: $(hash).offset().top
+      }, 800, function(){
+      window.location.hash = hash;
+      });
+    } // Termina if
+  });
+});
+
+$('#cartMenu').on('click', function(e){
+
+  if (clicks === 0){
+      //Clickear carrito, fondo borroso.
+      $(".containercart").slideDown(1000);
+      $(".containercart").css("position", "absolute");
+      $(".containercart").css("z-index", "1");
+      $(".containergrid").css("filter", "blur(5px)");
+      clicks ++;
+  } else {
+      // Deshacerfondo borroso y deslizar hacia arriba.
+      $(".containercart").slideUp(1000);
+      $(".containergrid").css("filter", "blur(0px)")
+      clicks --;
+  }
+});
